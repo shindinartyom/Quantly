@@ -1,0 +1,111 @@
+{% extends 'problems/base.html' %}
+
+{% block title %}My Stats - QuantPrepare{% endblock %}
+
+{% block content %}
+<div class="row mb-5">
+    <div class="col-12 text-center my-4">
+        <h2>My Performance Dashboard</h2>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card p-4 text-center border-0" style="background: rgba(138,43,226,0.15);">
+            <h3 class="display-5 fw-bold" style="color: var(--accent-secondary);">{{ total_attempts }}</h3>
+            <span class="text-muted text-uppercase">Total Attempts</span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-4 text-center border-0" style="background: rgba(56,239,125,0.15);">
+            <h3 class="display-5 fw-bold text-success">{{ correct_attempts }}</h3>
+            <span class="text-muted text-uppercase">Correct Answers</span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-4 text-center border-0" style="background: rgba(0,210,255,0.15);">
+            <h3 class="display-5 fw-bold" style="color: var(--accent-primary);">{{ accuracy }}%</h3>
+            <span class="text-muted text-uppercase">Accuracy</span>
+        </div>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="card p-3 mb-4">
+    <form method="get" class="row g-3 align-items-end">
+        <div class="col-md-4">
+            <label class="form-label text-muted small">Search Problem Title</label>
+            <input type="text" name="search" class="form-control border-secondary" placeholder="e.g. integral" value="{{ search }}">
+        </div>
+        <div class="col-md-3">
+            <label class="form-label text-muted small">Filter by Difficulty</label>
+            <select name="difficulty" class="form-select border-secondary">
+                <option value="">Any</option>
+                <option value="easy" {% if difficulty == 'easy' %}selected{% endif %}>Easy</option>
+                <option value="medium" {% if difficulty == 'medium' %}selected{% endif %}>Medium</option>
+                <option value="hard" {% if difficulty == 'hard' %}selected{% endif %}>Hard</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label text-muted small">Filter by Theme (Tag)</label>
+            <input type="text" name="theme" class="form-control border-secondary" placeholder="e.g. math" value="{{ theme }}">
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+        </div>
+    </form>
+</div>
+
+<div class="card">
+    <div class="card-header bg-transparent border-bottom">
+        <h5 class="mb-0 py-2 ms-2">{% if recent_attempts %}Recent Activity{% else %}No Activity Found{% endif %}</h5>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover table-dark mb-0 bg-transparent text-center align-middle">
+            <thead>
+                <tr>
+                    <th class="text-start ps-4">Problem</th>
+                    <th>Theme</th>
+                    <th>Difficulty</th>
+                    <th>Your Answer</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for attempt in recent_attempts %}
+                <tr>
+                    <td class="text-start ps-4">
+                        <a href="{% url 'problems:problem_detail' attempt.problem.id %}" class="text-light text-decoration-none fw-bold">
+                            {{ attempt.problem.title }}
+                        </a>
+                    </td>
+                    <td>
+                        {% for tag in attempt.problem.tags.all|slice:":2" %}
+                            <span class="badge badge-tag">{{ tag.name }}</span>
+                        {% endfor %}
+                        {% if attempt.problem.tags.count > 2 %}<span class="badge badge-tag">...</span>{% endif %}
+                    </td>
+                    <td>
+                        {% if attempt.problem.difficulty == 'easy' %}
+                            <span class="text-success small">Easy</span>
+                        {% elif attempt.problem.difficulty == 'medium' %}
+                            <span class="text-warning small">Medium</span>
+                        {% else %}
+                            <span class="text-danger small">Hard</span>
+                        {% endif %}
+                    </td>
+                    <td><strong class="{% if attempt.is_correct %}text-success{% else %}text-danger{% endif %}">{{ attempt.user_answer }}</strong></td>
+                    <td>
+                        {% if attempt.is_correct %}
+                            <span class="badge bg-success">Correct</span>
+                        {% else %}
+                            <span class="badge bg-danger">Wrong</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-muted small">{{ attempt.timestamp|date:"M d, Y H:i" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

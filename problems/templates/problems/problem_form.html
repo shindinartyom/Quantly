@@ -1,0 +1,120 @@
+{% extends 'problems/base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}{% if object %}Edit Problem{% else %}Post a Problem{% endif %} - QuantPrepare{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card p-4 shadow-lg">
+            <div class="card-header bg-transparent border-bottom border-light mb-4 text-center">
+                <h3>{% if object %}Edit Problem{% else %}Post a New Problem{% endif %}</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" id="problemForm">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.title.id_for_label }}" class="form-label">{{ form.title.label }}</label>
+                        {% render_field form.title %}
+                        {% if form.title.errors %}<div class="text-danger small mt-1">{{ form.title.errors.0 }}</div>{% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">{{ form.description.label }}</label>
+                        {% render_field form.description %}
+                        {% if form.description.errors %}<div class="text-danger small mt-1">{{ form.description.errors.0 }}</div>{% endif %}
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.correct_answer.id_for_label }}" class="form-label">{{ form.correct_answer.label }}</label>
+                            {% render_field form.correct_answer %}
+                            {% if form.correct_answer.errors %}<div class="text-danger small mt-1">{{ form.correct_answer.errors.0 }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.difficulty.id_for_label }}" class="form-label">{{ form.difficulty.label }}</label>
+                            {% render_field form.difficulty %}
+                            {% if form.difficulty.errors %}<div class="text-danger small mt-1">{{ form.difficulty.errors.0 }}</div>{% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">{{ form.tags_input.label }}</label>
+                        <div class="form-control d-flex flex-wrap align-items-center" id="tagsContainer" style="min-height: 48px; background-color: rgba(0,0,0,0.2);">
+                            <!-- Dynamic tags will appear here -->
+                            <input type="text" id="fakeTagInput" class="border-0 bg-transparent text-light ms-1" style="outline: none; flex-grow: 1;" placeholder="Type tag and press Enter...">
+                        </div>
+                        <!-- Hidden input to store actual tags for django form -->
+                        <input type="hidden" name="tags_input" id="id_tags_input" value="{{ form.tags_input.value|default:'' }}">
+                    </div>
+
+                    <div class="d-grid mt-5">
+                        <button type="submit" class="btn btn-primary btn-lg">{% if object %}Update{% else %}Create{% endif %}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const fakeInput = document.getElementById('fakeTagInput');
+    const hiddenInput = document.getElementById('id_tags_input');
+    const container = document.getElementById('tagsContainer');
+    let tags = [];
+
+    // init tags
+    if (hiddenInput.value) {
+        tags = hiddenInput.value.split(/\s+/).filter(t => t.trim() !== '');
+        renderTags();
+    }
+
+    function renderTags() {
+        // remove existing visuals
+        container.querySelectorAll('.badge').forEach(e => e.remove());
+        tags.forEach((tag, index) => {
+            const badge = document.createElement('span');
+            badge.className = 'badge badge-tag me-2 mb-1 p-2 bg-primary';
+            badge.innerHTML = `#${tag} <span style="cursor:pointer;" data-index="${index}">&times;</span>`;
+            container.insertBefore(badge, fakeInput);
+        });
+        hiddenInput.value = tags.join(' ');
+    }
+
+    container.addEventListener('click', (e) => {
+        if (e.target.tagName === 'SPAN' && e.target.hasAttribute('data-index')) {
+            tags.splice(e.target.getAttribute('data-index'), 1);
+            renderTags();
+        } else {
+            fakeInput.focus();
+        }
+    });
+
+    fakeInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const val = fakeInput.value.trim().toLowerCase();
+            if (val && !tags.includes(val)) {
+                tags.push(val);
+                fakeInput.value = '';
+                renderTags();
+            }
+        } else if (e.key === 'Backspace' && fakeInput.value === '') {
+            tags.pop();
+            renderTags();
+        }
+    });
+
+    // Handle form submit just to double check
+    document.getElementById('problemForm').addEventListener('submit', () => {
+        const val = fakeInput.value.trim().toLowerCase();
+        if (val && !tags.includes(val)) {
+            tags.push(val);
+        }
+        hiddenInput.value = tags.join(' ');
+    });
+});
+</script>
+{% endblock %}
