@@ -1,14 +1,11 @@
 # Quantly
 
-**Quantly** is a sleek, Django-powered web platform designed to streamline quantitative interview preparation. It allows users to post, solve, and track probability, statistics, and mathematics problems using dynamic analytical checking, including native fraction inputs.
+**Quantly** is a sleek, Django-powered web platform designed to streamline quantitative interview preparation. It allows users to post, solve, and track probability, statistics, and mathematics problems using automatic checking, including native fraction inputs.
 
 ## Features
 - 📊 **Performance Dashboard**: Real-time tracking of personal accuracy, success rates, and attempt logs.
-- 📐 **Smart Math Parsing**: Submit decimal answers (e.g., `0.0047`) or native proportions (e.g., `1/211`) interchangeably.
-- 🎯 **Adjustable Tolerances**: Problem creators define floating-point error margins allowing for safe approximation limits. 
 - 🔍 **Filtering System**: Dynamically search any question utilizing its multi-word Tag/Theme, Title, or Difficulty.
 - 🎨 **Modern Aesthetics**: Built entirely around a dark-themed Glassmorphism aesthetic featuring neon accent gradients.
-- 🔒 **User Flow**: Full secure authentication mechanics seamlessly mapped for individuals creating and solving questions interactively.
 
 ## Tech Stack
 - **Backend Frame**: Python, Django 6.0.3
