@@ -12,7 +12,7 @@
     <form method="get" class="row g-3 align-items-end">
         <div class="col-md-4">
             <label class="form-label text-muted small">Search Problem Title</label>
-            <input type="text" name="search" class="form-control border-secondary" placeholder="e.g. expected value" value="{{ search }}">
+            <input type="text" name="search" class="form-control border-secondary" placeholder="e.g. birthday problem" value="{{ search }}">
         </div>
         <div class="col-md-3">
             <label class="form-label text-muted small">Filter by Difficulty</label>
@@ -25,7 +25,7 @@
         </div>
         <div class="col-md-3">
             <label class="form-label text-muted small">Filter by Theme</label>
-            <input type="text" name="theme" class="form-control border-secondary" placeholder="e.g. math" value="{{ theme }}">
+            <input type="text" name="theme" class="form-control border-secondary" placeholder="e.g. expected value" value="{{ theme }}">
         </div>
         <div class="col-md-2">
             <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
@@ -55,7 +55,7 @@
                 
                 <div class="mb-3">
                     {% for tag in problem.tags.all %}
-                        <span class="badge badge-tag me-1">#{{ tag.name }}</span>
+                        <span class="badge badge-tag me-1">{{ tag.name }}</span>
                     {% endfor %}
                 </div>
                 

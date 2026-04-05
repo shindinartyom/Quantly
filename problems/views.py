@@ -101,14 +101,6 @@ class ProblemDetailView(LoginRequiredMixin, DetailView):
                 is_correct=is_correct
             )
             
-            if is_correct:
-                messages.success(request, f'✅ Correct! Answer {user_answer_str} is right.')
-            else:
-                messages.warning(
-                    request,
-                    f'❌ Wrong. The correct answer was: {self.object.correct_answer}'
-                )
-            
             return redirect('problems:problem_detail', pk=self.object.pk)
         
         context = self.get_context_data()
@@ -127,9 +119,9 @@ class ProblemCreateView(LoginRequiredMixin, CreateView):
         
         tags_input = form.cleaned_data.get('tags_input', '')
         if tags_input:
-            raw_tags = tags_input.replace(',', ' ').split()
+            raw_tags = [t.strip() for t in tags_input.split(',')]
             for t in raw_tags:
-                tag_name = t.strip().lower()
+                tag_name = t.lower()
                 if tag_name:
                     tag_obj, _ = Tag.objects.get_or_create(name=tag_name)
                     self.object.tags.add(tag_obj)
@@ -184,7 +176,7 @@ class ProblemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     
     def get_initial(self):
         initial = super().get_initial()
-        initial['tags_input'] = " ".join([t.name for t in self.object.tags.all()])
+        initial['tags_input'] = ",".join([t.name for t in self.object.tags.all()])
         return initial
 
     def form_valid(self, form):
@@ -192,9 +184,9 @@ class ProblemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         tags_input = form.cleaned_data.get('tags_input', '')
         self.object.tags.clear()
         if tags_input:
-            raw_tags = tags_input.replace(',', ' ').split()
+            raw_tags = [t.strip() for t in tags_input.split(',')]
             for t in raw_tags:
-                tag_name = t.strip().lower()
+                tag_name = t.lower()
                 if tag_name:
                     tag_obj, _ = Tag.objects.get_or_create(name=tag_name)
                     self.object.tags.add(tag_obj)

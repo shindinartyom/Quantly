@@ -8,15 +8,15 @@ class ProblemForm(forms.ModelForm):
         label='Themes',
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Enter themes separated by space or comma...'
+            'placeholder': 'Enter themes separated by comma...'
         })
     )
 
     correct_answer = forms.CharField(
-        label='Correct Answer (Number or proportion)',
+        label='Correct Answer',
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Enter a number or fraction (e.g. 1/211)'
+            'placeholder': 'Enter a number or fraction (e.g. 2/3)'
         })
     )
 
@@ -36,7 +36,7 @@ class ProblemForm(forms.ModelForm):
             'tolerance': forms.NumberInput(attrs={
                 'class': 'form-control',
                 'step': 'any',
-                'placeholder': 'e.g. 0.01'
+                'placeholder': 'e.g. 0.0'
             }),
             'difficulty': forms.Select(attrs={'class': 'form-select'}),
         }
@@ -77,6 +77,6 @@ class AnswerForm(forms.Form):
         max_length=100,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Enter a number or fraction (e.g. 1/211)'
+            'placeholder': 'Enter a number or fraction (e.g. 2/3)'
         })
     )

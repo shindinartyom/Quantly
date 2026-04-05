@@ -7,7 +7,7 @@
     <div class="col-12 text-center my-4">
         <h2>My Performance Dashboard</h2>
     </div>
-    
+
     <div class="col-md-4">
         <div class="card p-4 text-center border-0" style="background: rgba(138,43,226,0.15);">
             <h3 class="display-5 fw-bold" style="color: var(--accent-secondary);">{{ total_attempts }}</h3>
@@ -32,7 +32,8 @@
     <form method="get" class="row g-3 align-items-end">
         <div class="col-md-4">
             <label class="form-label text-muted small">Search Problem Title</label>
-            <input type="text" name="search" class="form-control border-secondary" placeholder="e.g. integral" value="{{ search }}">
+            <input type="text" name="search" class="form-control border-secondary" placeholder="e.g. birthday problem"
+                value="{{ search }}">
         </div>
         <div class="col-md-3">
             <label class="form-label text-muted small">Filter by Difficulty</label>
@@ -44,8 +45,9 @@
             </select>
         </div>
         <div class="col-md-3">
-            <label class="form-label text-muted small">Filter by Theme (Tag)</label>
-            <input type="text" name="theme" class="form-control border-secondary" placeholder="e.g. math" value="{{ theme }}">
+            <label class="form-label text-muted small">Filter by Theme</label>
+            <input type="text" name="theme" class="form-control border-secondary" placeholder="e.g. expected value"
+                value="{{ theme }}">
         </div>
         <div class="col-md-2">
             <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
@@ -73,31 +75,32 @@
                 {% for attempt in recent_attempts %}
                 <tr>
                     <td class="text-start ps-4">
-                        <a href="{% url 'problems:problem_detail' attempt.problem.id %}" class="text-light text-decoration-none fw-bold">
+                        <a href="{% url 'problems:problem_detail' attempt.problem.id %}"
+                            class="text-light text-decoration-none fw-bold">
                             {{ attempt.problem.title }}
                         </a>
                     </td>
                     <td>
                         {% for tag in attempt.problem.tags.all|slice:":2" %}
-                            <span class="badge badge-tag">{{ tag.name }}</span>
+                        <span class="badge badge-tag">{{ tag.name }}</span>
                         {% endfor %}
                         {% if attempt.problem.tags.count > 2 %}<span class="badge badge-tag">...</span>{% endif %}
                     </td>
                     <td>
                         {% if attempt.problem.difficulty == 'easy' %}
-                            <span class="text-success small">Easy</span>
+                        <span class="text-success small">Easy</span>
                         {% elif attempt.problem.difficulty == 'medium' %}
-                            <span class="text-warning small">Medium</span>
+                        <span class="text-warning small">Medium</span>
                         {% else %}
-                            <span class="text-danger small">Hard</span>
+                        <span class="text-danger small">Hard</span>
                         {% endif %}
                     </td>
                     <td><strong class="{% if attempt.is_correct %}text-success{% else %}text-danger{% endif %}">{{ attempt.user_answer }}</strong></td>
                     <td>
                         {% if attempt.is_correct %}
-                            <span class="badge bg-success">Correct</span>
+                        <span class="badge bg-success">Correct</span>
                         {% else %}
-                            <span class="badge bg-danger">Wrong</span>
+                        <span class="badge bg-danger">Wrong</span>
                         {% endif %}
                     </td>
                     <td class="text-muted small">{{ attempt.timestamp|date:"M d, Y H:i" }}</td>

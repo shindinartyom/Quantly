@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let tags = [];
 
     if (hiddenInput.value) {
-        tags = hiddenInput.value.split(/\s+/).filter(t => t.trim() !== '');
+        tags = hiddenInput.value.split(',').filter(t => t.trim() !== '');
         renderTags();
     }
 
@@ -78,10 +78,10 @@ document.addEventListener('DOMContentLoaded', () => {
         tags.forEach((tag, index) => {
             const badge = document.createElement('span');
             badge.className = 'badge badge-tag me-2 mb-1 p-2 bg-primary';
-            badge.innerHTML = `#${tag} <span style="cursor:pointer;" data-index="${index}">&times;</span>`;
+            badge.innerHTML = `${tag} <span style="cursor:pointer;" data-index="${index}">&times;</span>`;
             container.insertBefore(badge, fakeInput);
         });
-        hiddenInput.value = tags.join(' ');
+        hiddenInput.value = tags.join(',');
     }
 
     container.addEventListener('click', (e) => {
@@ -94,9 +94,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     fakeInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
+        if (e.key === 'Enter' || e.key === ',') {
             e.preventDefault();
-            const val = fakeInput.value.trim().toLowerCase();
+            const val = fakeInput.value.replace(',', '').trim().toLowerCase();
             if (val && !tags.includes(val)) {
                 tags.push(val);
                 fakeInput.value = '';
@@ -109,11 +109,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('problemForm').addEventListener('submit', () => {
-        const val = fakeInput.value.trim().toLowerCase();
+        const val = fakeInput.value.replace(',', '').trim().toLowerCase();
         if (val && !tags.includes(val)) {
             tags.push(val);
         }
-        hiddenInput.value = tags.join(' ');
+        hiddenInput.value = tags.join(',');
     });
 });
 </script>

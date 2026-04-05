@@ -29,7 +29,7 @@
                 </div>
                 <div class="mb-4">
                     {% for tag in problem.tags.all %}
-                        <span class="badge badge-tag me-1">#{{ tag.name }}</span>
+                        <span class="badge badge-tag me-1">{{ tag.name }}</span>
                     {% endfor %}
                 </div>
                 <div class="p-3 rounded mb-4" style="background: rgba(0,0,0,0.3); border-left: 4px solid var(--accent-secondary);">

@@ -34,7 +34,7 @@ class Problem(models.Model):
     )
     tolerance = models.FloatField(
         'Tolerance (margin of error)',
-        default=0.01,
+        default=0.0,
         help_text="Allowed difference for float numerical answers"
     )
     created_at = models.DateTimeField('Creation Date', auto_now_add=True)
