@@ -166,3 +166,45 @@ class StatisticsView(LoginRequiredMixin, TemplateView):
         context['theme'] = tag_q
         
         return context
+
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.views.generic import UpdateView, DeleteView
+
+class ProblemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Problem
+    form_class = ProblemForm
+    template_name = 'problems/problem_form.html'
+    
+    def test_func(self):
+        obj = self.get_object()
+        return obj.author == self.request.user
+    
+    def get_success_url(self):
+        return reverse_lazy('problems:problem_detail', kwargs={'pk': self.object.pk})
+    
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['tags_input'] = " ".join([t.name for t in self.object.tags.all()])
+        return initial
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        tags_input = form.cleaned_data.get('tags_input', '')
+        self.object.tags.clear()
+        if tags_input:
+            raw_tags = tags_input.replace(',', ' ').split()
+            for t in raw_tags:
+                tag_name = t.strip().lower()
+                if tag_name:
+                    tag_obj, _ = Tag.objects.get_or_create(name=tag_name)
+                    self.object.tags.add(tag_obj)
+        return response
+
+class ProblemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Problem
+    template_name = 'problems/problem_confirm_delete.html'
+    success_url = reverse_lazy('problems:problem_list')
+
+    def test_func(self):
+        obj = self.get_object()
+        return obj.author == self.request.user
