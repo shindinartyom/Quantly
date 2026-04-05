@@ -1,5 +1,5 @@
 from django import forms
-from .models import Problem, Tag
+from .models import Problem
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 class ProblemForm(forms.ModelForm):
